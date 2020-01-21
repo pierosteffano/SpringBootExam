@@ -6,15 +6,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="NotificationServices" />
         <module name="OrderServices" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="NotificationServices" target="1.8" />
       <module name="OrderServices" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="NotificationServices" options="-parameters" />
       <module name="OrderServices" options="-parameters" />
     </option>
   </component>
