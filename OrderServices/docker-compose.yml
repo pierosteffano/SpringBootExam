@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  mysql-standalone-container:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+      - MYSQL_DATABASE=db_orders
+      - MYSQL_USER=omgr
+      - MYSQL_PASSWORD=omgr@123
+    volumes:
+      - /data/mysql
+  springboot-docker-compose-mysql-app-container:
+    image: springboot-docker-compose-mysql-app:1
+    environment:
+      - MYSQL_HOST=mysql-standalone-container
+      - WSERVER_PORT=8082
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql-standalone-container
+    volumes:
+      - /data/springboot-docker-compose-mysql-app
