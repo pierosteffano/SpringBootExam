@@ -16,6 +16,8 @@ public class Order {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long orderId;
     private String shopperRut;
+    private String shopperEmail;
+
     @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "orderItemId")
     private Set<OrderItem> orderItems=new HashSet<>();
@@ -39,6 +41,14 @@ public class Order {
 
     public void setShopperRut(String shopperRut) {
         this.shopperRut = shopperRut;
+    }
+
+    public String getShopperEmail() {
+        return shopperEmail;
+    }
+
+    public void setShopperEmail(String shopperEmail) {
+        this.shopperEmail = shopperEmail;
     }
 
     public Set<OrderItem> getOrderItems() {

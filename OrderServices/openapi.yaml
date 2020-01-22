@@ -1,0 +1,12 @@
+openAPI:
+  info:
+    version: '1.0'
+    title: API Documentation
+    description: 'This is documentation for the Foosite API. You can find out more about FooSite at FooSite.org.'
+    termsOfService: http://foosite.org/terms/
+    license:
+      name: Apache2.0
+      url: http://www.apache.org/licenses/LICENSE-2.0.html
+    contact:
+      email: pierosteffano.delaguilamacher@tcs.com
+prettyPrint: true

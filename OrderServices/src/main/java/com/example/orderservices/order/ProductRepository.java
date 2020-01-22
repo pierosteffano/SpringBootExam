@@ -1,4 +1,4 @@
-package com.example.orderservices;
+package com.example.orderservices.order;
 import com.example.orderservices.order.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
