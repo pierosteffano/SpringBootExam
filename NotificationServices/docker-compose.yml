@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  notifications-mysql-standalone-container:
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+      - MYSQL_DATABASE=db_notifications
+      - MYSQL_USER=notmgr
+      - MYSQL_PASSWORD=notmgr@123
+    volumes:
+      - /data/mysql
+  notifications-rabbitmq-standalone-container:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+  notification-services-app-container:
+    image: notification-services-app:1
+    ports:
+      - 8082:8082
+    environment:
+      - MYSQL_HOST=notifications-mysql-standalone-container
+      - MYSQL_PORT=3306
+      - WSERVER_PORT=8082
+      - RABBITMQ_HOST=notifications-rabbitmq-standalone-container
+      - RABBITMQ_PORT=5672
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - notifications-mysql-standalone-container
+      - notifications-rabbitmq-standalone-container
+    volumes:
+      - /data/notification-services-app
