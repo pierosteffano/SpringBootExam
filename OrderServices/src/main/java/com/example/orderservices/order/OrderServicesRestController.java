@@ -2,6 +2,7 @@ package com.example.orderservices.order;
 
 import java.net.URI;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,15 +56,21 @@ public class OrderServicesRestController {
         String email=savedOrder.getShopperEmail();
 
         NotificationRequest request=new NotificationRequest(orderId,email);
-        logger.info("Sending Notification: {}",request.toString());
-        String result =restTemplate.postForObject(uri,request,String.class);
-        logger.info("Notification sent: {}",result);
+        try {
+            logger.info("Sending Notification: {}", request.toString());
+            String result = restTemplate.postForObject(uri, request, String.class);
+            logger.info("Notification sent: {}", result);
+        }catch (Exception e){
+            String msg="Notification was not Sent";
+            logger.error(msg,e);
+            throw new NotificationNotSentException(msg);
+        }
         return ResponseEntity.created(location).build();
     }
 
     @ApiOperation(value="find all orders",response=List.class)
     @ApiResponses(value={
-            @ApiResponse(code=201,message="Orders foud",response=List.class),
+            @ApiResponse(code=201,message="Orders found",response=List.class),
     })
     @GetMapping("/findall")
     public List<Order> retrieveAllOrders() {
@@ -79,16 +86,38 @@ public class OrderServicesRestController {
 
         return order.get();
     }
-    @PostMapping("/getordersbycreationandshoperandstatus")
+    @PostMapping("/getbycreationandshoperandstatus")
     public List<Order> retrieveOrders(@RequestBody Order p_order) {
+/*
         ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues();
+        logger.info("Query filter {}",p_order.toString());
         Example<Order> exampleQuery = Example.of(p_order, matcher);
         List<Order> lst_orders = orderRepository.findAll(exampleQuery);
+*/
+        List<Order> lst_orders = new ArrayList(1);
+        if(p_order.getCreationDate()!=null&&p_order.getShopperRut()==null&&p_order.getOrderStatus()==null){
+            lst_orders =orderRepository.findByCreationDateGreaterThanEqual(p_order.getCreationDate());
+        }else if(p_order.getShopperRut()!=null&&p_order.getOrderStatus()==null&&p_order.getCreationDate()==null) {
+            lst_orders =orderRepository.findByShopperRut(p_order.getShopperRut());
+        }else if(p_order.getOrderStatus()!=null&&p_order.getCreationDate()==null&&p_order.getShopperRut()==null) {
+            lst_orders =orderRepository.findByOrderStatus(p_order.getOrderStatus());
+        }else if(p_order.getOrderStatus()!=null&&p_order.getCreationDate()!=null&&p_order.getShopperRut()==null) {
+            lst_orders =orderRepository.findByOrderStatusAndCreationDate(p_order.getOrderStatus(),p_order.getCreationDate());
+        }else if(p_order.getOrderStatus()!=null&&p_order.getCreationDate()==null&&p_order.getShopperRut()!=null) {
+            lst_orders =orderRepository.findByOrderStatusAndShopperRut(p_order.getOrderStatus(),p_order.getShopperRut());
+        }else if(p_order.getOrderStatus()==null&&p_order.getCreationDate()!=null&&p_order.getShopperRut()!=null) {
+            lst_orders =orderRepository.findByCreationDateGreaterThanEqualAndShopperRut(p_order.getCreationDate(),p_order.getShopperRut());
+        }else if(p_order.getOrderStatus()!=null&&p_order.getCreationDate()!=null&&p_order.getShopperRut()!=null) {
+            lst_orders =orderRepository.findByCreationDateGreaterThanEqualAndShopperRutAndOrderStatus(p_order.getCreationDate(),p_order.getShopperRut(),p_order.getOrderStatus());
+        }
+
         //List<Order> lst_orders = orderRepository.findByCreationDateOrShopperRutOrOrderStatus(p_order.getCreationDate(),p_order.getShopperRut(),p_order.getOrderStatus());
 
-        if (lst_orders.isEmpty())
+        if (lst_orders.isEmpty()) {
+            String msg = "No orders were found for given filters";
+            logger.info("No orders were found for given filters");
             throw new OrderNotFoundException("No orders were found for given filters");
-
+        }
         return lst_orders;
     }
 }
