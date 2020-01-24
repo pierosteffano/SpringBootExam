@@ -30,3 +30,6 @@ Access http://[HOST]:8081/swagger-ui.html .
 ###Notification Services 
 
 Access http://[HOST]:8082/swagger-ui.html .
+
+#PostMan
+Exported file: SpringbootExam.postman_collection.json
