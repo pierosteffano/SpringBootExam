@@ -1,6 +1,9 @@
 package com.example.orderservices.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -14,24 +17,30 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long orderId;
+    @JsonInclude(Include.NON_NULL)
+    private Integer orderId;
+    @JsonInclude(Include.NON_NULL)
     private String shopperRut;
+    @JsonInclude(Include.NON_NULL)
     private String shopperEmail;
 
     @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "orderItemId")
     private Set<OrderItem> orderItems=new HashSet<>();
+    @JsonInclude(Include.NON_NULL)
     private Float orderTotal;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonInclude(Include.NON_NULL)
     private Date creationDate;
+    @JsonInclude(Include.NON_NULL)
     private String orderStatus;
 
-    public Long getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 

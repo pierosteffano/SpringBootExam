@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @Api(value="/notification",description="Notification services",produces ="application/json")
 @RequestMapping("/notification")
@@ -26,10 +29,14 @@ public class NotificationServicesRestController {
             @ApiResponse(code=201,message="Notification message sent successfully",response=String.class),
     })
     @PostMapping("/send")
-    public String  sendNotification(@RequestBody Notification notification, RedirectAttributes redirectAttributes){
-        notificationMessageSender.sendNotification(notification);
+    public ResponseEntity<Object>  sendNotification(@RequestBody Notification notification, RedirectAttributes redirectAttributes){
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{orderId}")
+                .buildAndExpand(notification.getOrderId()).toUri();
+
         redirectAttributes.addFlashAttribute("message", "Notification message sent successfully");
-        return "redirect:/";
+        final ResponseEntity<Object> build = ResponseEntity.created(location).body("Notification message sent successfully");
+
+        return build;
         
         /*Notification savedNotification = notificationsRepository.save(notification);
 

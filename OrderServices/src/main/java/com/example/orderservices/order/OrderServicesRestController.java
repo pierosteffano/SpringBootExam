@@ -2,9 +2,7 @@ package com.example.orderservices.order;
 
 import java.net.URI;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -49,7 +48,7 @@ public class OrderServicesRestController {
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{orderId}")
                 .buildAndExpand(savedOrder.getOrderId()).toUri();
-        final String uri = "http://".concat(notificationsHost).concat(":").concat(notificationsPort).concat("/sendnotification");
+        final String uri = "http://".concat(notificationsHost).concat(":").concat(notificationsPort).concat("/notification/send");
 
         RestTemplate restTemplate = new RestTemplate();
         String orderId=savedOrder.getOrderId().toString();
@@ -63,7 +62,9 @@ public class OrderServicesRestController {
         }catch (Exception e){
             String msg="Notification was not Sent";
             logger.error(msg,e);
-            throw new NotificationNotSentException(msg);
+            //throw new NotificationNotSentException(msg);
+            return new ResponseEntity<>("Order ".concat(savedOrder.getOrderId().toString()).concat(" saved but notification was not Sent"),HttpStatus.CREATED);
+
         }
         return ResponseEntity.created(location).build();
     }
@@ -73,28 +74,37 @@ public class OrderServicesRestController {
             @ApiResponse(code=201,message="Orders found",response=List.class),
     })
     @GetMapping("/findall")
-    public List<Order> retrieveAllOrders() {
-        return orderRepository.findAll();
+    public ResponseEntity<OrderList> retrieveAllOrders() {
+        ResponseEntity<OrderList> ret=new ResponseEntity<>( new OrderList(orderRepository.findAll()), HttpStatus.OK);
+        return ret;
     }
 
+    @ApiOperation(value="find by Id",response=List.class)
+    @ApiResponses(value={
+            @ApiResponse(code=201,message="Orders found",response=List.class),
+    })
     @GetMapping("/byId/{id}")
-    public Order retrieveOrder(@PathVariable long id) {
+    public ResponseEntity<Order> retrieveOrder(@PathVariable Integer id) {
         Optional<Order> order = orderRepository.findById(id);
 
         if (!order.isPresent())
             throw new OrderNotFoundException("id-" + id);
-
-        return order.get();
+        ResponseEntity<Order> ret=new ResponseEntity<>(order.get(), HttpStatus.OK);
+        return ret;
     }
+    @ApiOperation(value="find by bycreationandshoperandstatus",response=List.class)
+    @ApiResponses(value={
+            @ApiResponse(code=201,message="Orders found",response=List.class),
+    })
     @PostMapping("/getbycreationandshoperandstatus")
-    public List<Order> retrieveOrders(@RequestBody Order p_order) {
+    public ResponseEntity<OrderList> retrieveOrders(@RequestBody Order p_order) {
 /*
         ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues();
         logger.info("Query filter {}",p_order.toString());
         Example<Order> exampleQuery = Example.of(p_order, matcher);
         List<Order> lst_orders = orderRepository.findAll(exampleQuery);
 */
-        List<Order> lst_orders = new ArrayList(1);
+        List<Order> lst_orders = new ArrayList<>(1);
         if(p_order.getCreationDate()!=null&&p_order.getShopperRut()==null&&p_order.getOrderStatus()==null){
             lst_orders =orderRepository.findByCreationDateGreaterThanEqual(p_order.getCreationDate());
         }else if(p_order.getShopperRut()!=null&&p_order.getOrderStatus()==null&&p_order.getCreationDate()==null) {
@@ -111,13 +121,12 @@ public class OrderServicesRestController {
             lst_orders =orderRepository.findByCreationDateGreaterThanEqualAndShopperRutAndOrderStatus(p_order.getCreationDate(),p_order.getShopperRut(),p_order.getOrderStatus());
         }
 
-        //List<Order> lst_orders = orderRepository.findByCreationDateOrShopperRutOrOrderStatus(p_order.getCreationDate(),p_order.getShopperRut(),p_order.getOrderStatus());
-
         if (lst_orders.isEmpty()) {
             String msg = "No orders were found for given filters";
             logger.info("No orders were found for given filters");
             throw new OrderNotFoundException("No orders were found for given filters");
         }
-        return lst_orders;
+        ResponseEntity<OrderList> ret=new ResponseEntity<>(new OrderList(lst_orders), HttpStatus.OK);
+        return ret;
     }
 }

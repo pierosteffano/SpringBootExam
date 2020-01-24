@@ -9,7 +9,7 @@ public class Notification {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "notificationId")
-    private Long notificationId;
+    private Integer notificationId;
     private String orderId;
     @Email
     private String notificationEmail;
@@ -21,11 +21,11 @@ public class Notification {
         this.notificationEmail=notificationEmail;
     }
 
-    public Long getNotificationId() {
+    public Integer getNotificationId() {
         return notificationId;
     }
 
-    public void setNotificationId(Long notificationId) {
+    public void setNotificationId(Integer notificationId) {
         this.notificationId = notificationId;
     }
 

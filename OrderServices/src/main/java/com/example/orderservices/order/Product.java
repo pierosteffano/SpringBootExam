@@ -1,5 +1,8 @@
 package com.example.orderservices.order;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import javax.persistence.*;
 
 @Entity(name="PRODUCTS")
@@ -8,15 +11,17 @@ public class Product {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "productId")
-    private Long productId;
+    private Integer productId;
+    @JsonInclude(Include.NON_NULL)
     private String name;
+    @JsonInclude(Include.NON_NULL)
     private Float price;
 
-    public Long getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 

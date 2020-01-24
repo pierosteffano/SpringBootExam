@@ -1,6 +1,8 @@
 package com.example.orderservices.order;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import javax.persistence.*;
 
@@ -9,7 +11,8 @@ public class OrderItem {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long orderItemId;
+    @JsonInclude(Include.NON_NULL)
+    private Integer orderItemId;
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
@@ -19,11 +22,11 @@ public class OrderItem {
     private Product product;
     private short quantity;
 
-    public Long getOrderItemId() {
+    public Integer getOrderItemId() {
         return orderItemId;
     }
 
-    public void setOrderItemId(Long orderItemId) {
+    public void setOrderItemId(Integer orderItemId) {
         this.orderItemId = orderItemId;
     }
 

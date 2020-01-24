@@ -6,9 +6,10 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long>{
+public interface OrderRepository extends JpaRepository<Order, Integer>{
 
     List<Order> findByCreationDateGreaterThanEqual(Date creationDate);
 
