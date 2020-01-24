@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "43553fc6-509d-412b-a0b8-967a7fa55cca",
+		"name": "SpringbootExam",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "8081/order/create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\n        \"shopperRut\": \"24175297-6\",\n        \"shopperEmail\": \"pierosteffano@gmail.com\",\n        \"orderItems\": [\n            {\n                \"product\": {\n                    \"productId\": 1,\n                    \"name\": \"Producto-1\",\n                    \"price\": 5000\n                },\n                \"quantity\": 7\n            }\n        ]\n    }"
+				},
+				"url": {
+					"raw": "http://{{host}}:8081/order/create",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "8081",
+					"path": [
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8081/order/getbycreationandshoperandstatus",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\n        \"shopperRut\": \"24175297-6\",\n        \"creationDate\": \"2020-01-21 15:18:06\",\n        \"orderStatus\": \"CREATED\"\n    }"
+				},
+				"url": {
+					"raw": "http://{{host}}:8081/order/getbycreationandshoperandstatus",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "8081",
+					"path": [
+						"order",
+						"getbycreationandshoperandstatus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8081/order/findall",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{host}}:8081/order/findall",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "8081",
+					"path": [
+						"order",
+						"findall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8081/order/byId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{host}}:8081/order/byId/{{id}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "8081",
+					"path": [
+						"order",
+						"byId",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8082/sendnotification",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\n        \"orderId\": \"1\",\n        \"notificationEmail\": \"pierosteffano@gmail.com\"\n    }"
+				},
+				"url": {
+					"raw": "http://{{host}}:8082/notification/send",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "8082",
+					"path": [
+						"notification",
+						"send"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
